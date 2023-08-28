@@ -4,7 +4,9 @@
             "type": "@apigateway.api",
             "resources": {
                 "/{proxy+}": {
-                    "ANY": "@api_lambda:props.arn"
+                    "GET": "@api_lambda:props.arn",
+                    "POST": "@api_lambda:props.arn",
+                    "OPTIONS": "@api_lambda:props.arn"
                 }
             },
             "cors_enabled": true

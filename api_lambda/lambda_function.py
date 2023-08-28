@@ -34,20 +34,10 @@ app = FastAPI(
     
     Include stuff about what a project is and what a collection is.
     """,
-    version=os.environ.get("VERSION", "1.0.0"),
-    middleware=[
-        Middleware(
-            CORSMiddleware, 
-            allow_origins=["*"],
-            allow_credentials=True,
-            allow_methods=["*"], 
-            allow_headers=["*"]
-        )
-    ],
-
-    
+    version=os.environ.get("VERSION", "1.0.0")
 )
 app.add_middleware(ExceptionMiddleware, handlers=app.exception_handlers)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 project_router = APIRouter()
 
