@@ -1,4 +1,4 @@
-fastapi[all]
+fastapi[all]=0.100.0
 whiplash-client
 mangum
 pydantic=1.10.12
