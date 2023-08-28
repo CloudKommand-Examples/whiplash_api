@@ -34,6 +34,7 @@ app = FastAPI(
     
     Include stuff about what a project is and what a collection is.
     """,
+    docs_url="/docs",
     version=os.environ.get("VERSION", "1.0.0")
 )
 app.add_middleware(ExceptionMiddleware, handlers=app.exception_handlers)
@@ -49,6 +50,7 @@ async def unhandled_exception_handler(request, err):
 def lambda_env(key):
     return os.environ.get(key)
 
+@logger.inject_lambda_context(log_event=True)
 def lambda_handler(event, context):
     try:
         # table_name = lambda_env("table_name")
@@ -59,10 +61,8 @@ def lambda_handler(event, context):
         # http_method = context.get("http").get("method")
         # raw_path = event['rawPath']
         # path = raw_path.replace("/live", "")
-        event['rawPath'] = event['rawPath'].replace("/live", "")
-        print(event['rawPath'])
         
-        return Mangum(app)(event, context)
+        return Mangum(app, api_gateway_base_path="/live")(event, context)
 
     except:
         print(traceback.format_exc())
