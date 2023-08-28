@@ -15,8 +15,8 @@ class ProjectOut(BaseModel):
     project_name: str
     collections: list[CollectionOut]
 
-class ProjectListOut(BaseModel):
-    projects: list[ProjectOut] | None = None
+class ProjectsOut(BaseModel):
+    projects: dict | None = None
 
 
 
