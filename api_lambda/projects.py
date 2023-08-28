@@ -7,7 +7,7 @@ from typing import List
 from whiplash.whiplash import Whiplash
 
 from basics import REGION, STAGE
-from collections import CollectionOut
+from whip_collections import CollectionOut
 from responseutil import response_to_fastapi_response as response
 
 

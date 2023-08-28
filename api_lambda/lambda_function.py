@@ -15,7 +15,7 @@ from starlette.exceptions import ExceptionMiddleware
 from aws_lambda_powertools import Logger
 
 from basics import initialize as api_initialize
-from collections import CollectionOut, \
+from whip_collections import CollectionOut, \
     get as api_get_collection, all as api_list_collections_for_project, \
     create as api_create_collection, CreateCollection
 from items import CreateItem, create as api_create_item, \
