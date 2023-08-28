@@ -3,31 +3,55 @@ from typing import Optional
 from venv import logger
 
 import numpy as np
+from pydantic import BaseModel
 
 from whiplash.collection import Collection
-from whiplash.responses import error_response, parse_body, response
+# from whiplash.responses import error_response, parse_body, response
 from whiplash.vector import Vector
 from whiplash.whiplash import Whiplash
 
-REGION = os.environ.get("REGION")
-STAGE = os.environ.get("STAGE")
+from basics import REGION, STAGE
+from responseutil import response_to_fastapi_response as response, \
+    error_response_to_fastapi_response as error_response
 
 
-def _get_collection(event) -> Optional[Collection]:
-    project_id = event["pathParameters"]["projectId"]
-    collection_id = event["pathParameters"]["collectionId"]
+class CreateItem(BaseModel):
+    id: str
+    vector: list[float]
+
+class CreateSuccess(BaseModel):
+    message: str = "success"
+
+class SearchItems(BaseModel):
+    query: list[float]
+    limit: int = 5
+
+class SearchItemsOut(BaseModel):
+    id: str
+    vector: list[float]
+    dist: float
+
+class ItemOut(BaseModel):
+    id: str
+    vector: list[float]
+
+class BatchCreate(BaseModel):
+    vectors: list[CreateItem]
+
+
+def _get_collection(project_id, collection_id) -> Optional[Collection]:
     whiplash = Whiplash(REGION, STAGE, project_name=project_id)
     return whiplash.get_collection(collection_id)
 
 
-def get(event, context):
+def get(project_id, collection_id, item_id):
     # Get item
-    collection = _get_collection(event)
+    collection = _get_collection(project_id, collection_id)
     if not collection:
         return error_response("Collection not found", 404)
 
     try:
-        item = collection.get_item(event["pathParameters"]["itemId"])
+        item = collection.get_item(item_id)
     except Exception as e:
         logger.info(f"Error getting item: {e}")
         item = None
@@ -38,71 +62,49 @@ def get(event, context):
     return response(item.to_dict())
 
 
-def search(event, context):
+def search(project_id, collection_id, query, limit=5):
     # Search collection
-    collection = _get_collection(event)
+    collection = _get_collection(project_id, collection_id)
 
     if not collection:
         return error_response("Collection not found", 404)
 
-    body, error = parse_body(event)
-    if not body or error:
-        return error
-
-    query = body.get("query", None)
-    limit = body.get("limit", 5)
-
-    if (
-        not query
-        or not isinstance(query, list)
-        or len(query) != collection.config.n_features
-    ):
+    # The rest of the validation is done by FastAPI
+    if len(query) != collection.config.n_features:
         return error_response(
-            "'query' is required and must be a n_features length list of floats"
+            f"query must be a {collection.config.n_features} length list of floats"
         )
 
     query = np.array(query, dtype=np.float32)
-    limit = int(limit)
+
+    # Unnecessary with FastAPI
+    # limit = int(limit)
 
     results = collection.search(query, k=limit)
     return response([result.to_dict() for result in results])
 
 
-def create(event, context):
+def create(project_id, collection_id, vector_id, vector):
     # Create item from POST body
-    collection = _get_collection(event)
+    collection = _get_collection(project_id, collection_id)
 
     if not collection:
         return error_response("Collection not found", 404)
 
-    body, error = parse_body(event)
-    if not body or error:
-        return error
-    vector_id = body.get("id", None)
-    if not vector_id:
-        return error_response("'id' required")
-    vector = body.get("vector", None)
-    if not vector or len(vector) != collection.config.n_features:
-        return error_response("'vector' required and must match 'n_features' in size")
+    if len(vector) != collection.config.n_features:
+        return error_response(f"query must be a {collection.config.n_features} length list of floats for collection {collection_id}")
+    
     vector = Vector(vector_id, vector)
     collection.insert(vector)
     return response({"message": "success"})
 
 
-def create_batch(event, context):
+def create_batch(project_id, collection_id, vectors):
     # Create items from POST body
-    collection = _get_collection(event)
+    collection = _get_collection(project_id, collection_id)
 
     if not collection:
         return error_response("Collection not found", 404)
-
-    body, error = parse_body(event)
-    if not body or error:
-        return error
-
-    vectors = body.get("vectors", None)
-    if not vectors:
-        return error_response("'vectors' required")
 
     for vector in vectors:
         vector_id = vector.get("id", None)

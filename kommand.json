@@ -1,0 +1,50 @@
+{
+    "components": {
+        "apigw": {
+            "type": "@apigateway.api",
+            "resources": {
+                "/{proxy+}": {
+                    "ALL": "@api_lambda:props.arn"
+                }
+            },
+            "cors_enabled": true
+        },
+        "api_lambda": {
+            "type": "@lambda.function",
+            "description": "Whiplash API Handler",
+            "timeout": 10,
+            "policies": ["@policy"],
+            "environment_variables": {
+                "STAGE": "dev",
+                "API_KEY": "$api_key",
+                "MAX_ITEMS_PER_BUCKET": 10000,
+                "DEFAULT_N_PLANES": 6,
+                "DEFAULT_BIT_START": 8,
+                "DEFAULT_BIT_SCALE_FACTOR": 2
+            }
+        },
+        "policy": {
+            "type": "@iam.policy",
+            "description": "Full DynamoDB Permissions for Whiplash API",
+            "document": {
+                "Version": "2012-10-17",
+                "Statement": [{
+                    "Sid": "Dynamo",
+                    "Effect": "Allow",
+                    "Action": [
+                        "dynamodb:*"
+                    ],
+                    "Resource": "*"
+                }]
+            }
+        }
+    },
+    "secrets": [
+        "api_key"
+    ],
+    "repos": {
+        "apigateway": "https://github.com/cloudkommand/apigateway",
+        "lambda": "https://github.com/cloudkommand/lambda",
+        "iam": "https://github.com/cloudkommand/iam"
+    }
+}

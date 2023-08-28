@@ -1,35 +1,46 @@
 import os
 
-from whiplash.responses import error_response, response
+from pydantic import BaseModel
+from typing import List
+
+# from whiplash.responses import error_response, response
 from whiplash.whiplash import Whiplash
 
-REGION = os.environ.get("REGION")
-STAGE = os.environ.get("STAGE")
+from basics import REGION, STAGE
+from collections import CollectionOut
+from responseutil import response_to_fastapi_response as response
 
 
-def get(event, context):
+class ProjectOut(BaseModel):
+    project_name: str
+    collections: list[CollectionOut]
+
+class ProjectListOut(BaseModel):
+    projects: list[ProjectOut] | None = None
+
+
+
+def get(project_id):
     # Get project metadata
     whiplash = Whiplash(
-        REGION, STAGE, project_name=event["pathParameters"]["projectId"]
+        REGION, STAGE, project_name=project_id
     )
     collections = [
         collection.to_dict()
         for collection in whiplash.get_all_collections()
-        if collection.config.project_name == event["pathParameters"]["projectId"]
+        if collection.config.project_name == project_id
     ]
 
     if not collections or len(collections) == 0:
-        return error_response("Project not found", 404)
+        return response(f"Project {project_id} not found", 404)
 
-    return response(
-        {
-            "project_name": event["pathParameters"]["projectId"],
-            "collections": collections,
-        }
-    )
+    return response({
+        "project_name": project_id,
+        "collections": collections,
+    })
 
 
-def all(event, context):
+def all():
     # List projects
     whiplash = Whiplash(REGION, STAGE)
     collections = whiplash.get_all_collections()
