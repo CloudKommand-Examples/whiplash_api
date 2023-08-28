@@ -43,7 +43,7 @@ def all(project_id):
     # List collections
     whiplash = Whiplash(REGION, STAGE, project_name=project_id)
     collections = whiplash.get_all_collections()
-    return response([collection.to_dict() for collection in collections])
+    return response([collection.to_dict() for collection in collections if collection.to_dict()['project_name'] == project_id])
 
 
 def create(project_id, collection_name, n_features, n_planes, bit_start, bit_scale_factor):
