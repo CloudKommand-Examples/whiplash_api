@@ -26,9 +26,9 @@ class CollectionOut(BaseModel):
 class CreateCollection(BaseModel):
     collection_name: str
     n_features: int
-    n_planes: int | DEFAULT_N_PLANES = None
-    bit_start: int | DEFAULT_BIT_START = None
-    bit_scale_factor: float | DEFAULT_BIT_SCALE_FACTOR = None
+    n_planes: int | None = DEFAULT_N_PLANES
+    bit_start: int | None = DEFAULT_BIT_START
+    bit_scale_factor: float | None = DEFAULT_BIT_SCALE_FACTOR
 
 def get(project_id, collection_id):
     # Get collection
