@@ -1,3 +1,5 @@
 fastapi[all]
 whiplash-client
 mangum
+pydantic=1.10.12
+aws_lambda_powertools
