@@ -122,5 +122,5 @@ def batch_create_items(project_name: str, collection_name: str, batch: BatchCrea
 def initialize() -> CreateSuccess:
     return api_initialize()
 
-app.add_router(project_router, prefix="/projects")
+app.include_router(project_router, prefix="/projects")
 
