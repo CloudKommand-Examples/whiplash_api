@@ -46,7 +46,7 @@ project_router = APIRouter()
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request, err):
     logger.exception(f"Unhandled exception in {request.url.path}: {err}")
-    return JSONResponse(status_code=500, content={"detail": "apiernal Server Error"})
+    return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
 def lambda_env(key):
     return os.environ.get(key)
