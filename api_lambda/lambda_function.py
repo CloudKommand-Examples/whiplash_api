@@ -35,6 +35,7 @@ app = FastAPI(
     Include stuff about what a project is and what a collection is.
     """,
     docs_url="/docs",
+    root_path="/live",
     version=os.environ.get("VERSION", "1.0.0")
 )
 app.add_middleware(ExceptionMiddleware, handlers=app.exception_handlers)
