@@ -22,7 +22,7 @@ from items import CreateItem, create as api_create_item, \
     CreateSuccess, get as api_get_item, SearchItems, SearchItemsOut, \
     ItemOut, search as api_search_items, BatchCreate, create_batch as api_batch_create_items
 from projects import get as api_get_project, all as api_list_projects, \
-    ProjectOut, ProjectListOut
+    ProjectOut, ProjectsOut
 
 
 logger = Logger(service="whiplash-api")
@@ -69,7 +69,7 @@ def lambda_handler(event, context):
         print(traceback.format_exc())
 
 @project_router.get("/", tags=["Projects"])
-def list_projects() -> ProjectListOut:
+def list_projects() -> ProjectsOut:
     return api_list_projects()
 
 @project_router.get("/{project_name}", tags=["Projects"])
