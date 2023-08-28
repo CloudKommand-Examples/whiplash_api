@@ -11,6 +11,7 @@
         },
         "api_lambda": {
             "type": "@lambda.function",
+            "runtime": "python3.11",
             "description": "Whiplash API Handler",
             "timeout": 10,
             "policies": ["@policy"],
