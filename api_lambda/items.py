@@ -94,7 +94,7 @@ def create(project_id, collection_id, vector_id, vector):
     if len(vector) != collection.config.n_features:
         return error_response(f"query must be a {collection.config.n_features} length list of floats for collection {collection_id}")
     
-    vector = Vector(vector_id, vector)
+    vector = Vector(vector_id, np.array(vector, dtype=np.float32))
     collection.insert(vector)
     return response({"message": "success"})
 
