@@ -69,7 +69,7 @@ def lambda_handler(event, context):
         print(traceback.format_exc())
 
 @project_router.get("/", tags=["Projects"])
-def list_projects() -> ProjectsOut:
+def get_projects() -> ProjectsOut:
     return api_list_projects()
 
 @project_router.get("/{project_name}", tags=["Projects"])
