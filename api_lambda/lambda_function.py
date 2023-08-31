@@ -31,7 +31,9 @@ logger = Logger(service="whiplash-api")
 API_KEY_HEADER = APIKeyHeader(name="x-api-key", auto_error=False)
 
 def get_api_key(api_key_header: str = Security(API_KEY_HEADER)):
-    if api_key_header == os.environ.get("API_KEY"):
+    if os.environ.get("API_KEY", "None") == "None":
+        return api_key_header
+    elif api_key_header == os.environ.get("API_KEY"):
         return api_key_header
     else:
         raise HTTPException(status_code=401, detail="Unauthorized, invalid or missing API Key")
