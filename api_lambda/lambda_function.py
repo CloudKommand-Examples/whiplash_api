@@ -42,7 +42,9 @@ app = FastAPI(
     title="Whiplash API",
     summary="CloudKommand-deployed standalone API that provides an easy-to-use api interface for self-hosted Whiplash, a serverless vector store.",
     description="""
-        The fundamental units in Whiplash are collections and items, where an item is a vector, and a collection is a set of items that are indexed for fast search. Default settings for collections are set during deployment, but all settings can be changed when creating a collection.
+The fundamental units in Whiplash are collections and items, where an item is a vector, and a collection is a set of items that are indexed for fast search. 
+
+Default settings for collections are set during deployment, but all settings can be changed when creating a collection.
     """,
     docs_url="/docs",
     root_path="/live",
