@@ -46,6 +46,11 @@
                     "Resource": "*"
                 }]
             }
+        },
+        "metadata_table": {
+            "type": "@dynamodb.table",
+            "name": "whiplash_metadata",
+            "pkey_name": "id"
         }
     },
     "secrets": [
