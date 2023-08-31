@@ -59,6 +59,7 @@
     "repos": {
         "apigateway": "https://github.com/cloudkommand/apigateway",
         "lambda": "https://github.com/cloudkommand/lambda",
-        "iam": "https://github.com/cloudkommand/iam"
+        "iam": "https://github.com/cloudkommand/iam",
+        "dynamodb": "https://github.com/cloudkommand/dynamodb"
     }
 }
